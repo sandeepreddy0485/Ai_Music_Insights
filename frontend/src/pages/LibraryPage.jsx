@@ -183,7 +183,7 @@ export const LibraryPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredAndSortedLibrary.map((item) => {
             const artworkSrc = item.artworkUrl
-              ? item.artworkUrl.replace('http://', 'https://').replace('100x100bb', '300x300bb')
+              ? item.artworkUrl.replace('http://', 'https://')
               : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
 
             return (

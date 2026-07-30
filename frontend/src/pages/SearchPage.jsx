@@ -109,7 +109,7 @@ export const SearchPage = () => {
             Discover & Collect <span className="gradient-text">Albums</span>
           </h1>
           <p className="text-slate-400 text-sm sm:text-base mt-2">
-            Search by album title, artist, movie soundtrack, or genre. Save your favorite records to build your personal library!
+            Search by album title, artist name, movie soundtrack, or genre. Save records to your personal collection!
           </p>
         </div>
 
@@ -149,9 +149,9 @@ export const SearchPage = () => {
           {albums.map((album) => {
             const isSaved = savedCatalogIds.has(album.appleCatalogId);
 
-            // Secure HTTPS 300x300 artwork URL
+            // 1. Artwork URL from Apple CDN
             const artworkSrc = album.artworkUrl
-              ? album.artworkUrl.replace('http://', 'https://').replace('100x100bb', '300x300bb')
+              ? album.artworkUrl.replace('http://', 'https://')
               : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
 
             return (
@@ -160,7 +160,7 @@ export const SearchPage = () => {
                 <div className="relative aspect-square overflow-hidden bg-slate-900">
                   <img
                     src={artworkSrc}
-                    alt={album.title}
+                    alt={album.title || album.artistName}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                     onError={(e) => {
@@ -178,10 +178,10 @@ export const SearchPage = () => {
 
                 {/* Info Container */}
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {/* 2. Display Title */}
                     <h3 className="font-extrabold text-white text-base leading-snug line-clamp-2 group-hover:text-indigo-300 transition-colors">
-                      {album.title}
+                      {album.title || album.artistName}
                     </h3>
                     
                     {/* 3. Display Artist */}
