@@ -6,7 +6,7 @@ import { SaveAlbumModal } from '../components/SaveAlbumModal';
 import { Search, Music, Disc, Calendar, CheckCircle2, BookmarkPlus, Loader2, Sparkles, UserCheck, Film } from 'lucide-react';
 
 export const SearchPage = () => {
-  const [searchTerm, setSearchTerm] = useState('S.P. Balasubrahmanyam');
+  const [searchTerm, setSearchTerm] = useState('Coldplay');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const [albums, setAlbums] = useState([]);
@@ -35,7 +35,7 @@ export const SearchPage = () => {
     }
   };
 
-  // Perform iTunes Search
+  // Perform iTunes Intelligent Search
   useEffect(() => {
     if (!debouncedSearchTerm.trim()) {
       setAlbums([]);
@@ -46,7 +46,7 @@ export const SearchPage = () => {
       setLoading(true);
       setError('');
       try {
-        const results = await searchService.searchAlbums(debouncedSearchTerm, 'artist');
+        const results = await searchService.searchAlbums(debouncedSearchTerm);
         setAlbums(results || []);
       } catch (err) {
         if (err.response?.status === 401) {
@@ -102,14 +102,14 @@ export const SearchPage = () => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="relative z-10 max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-4">
-            <UserCheck className="w-3.5 h-3.5" />
-            <span>Search Movies & Albums by Artist</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>iTunes Intelligent Music Catalog</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Movie & Music Catalog by <span className="gradient-text">Artist</span>
+            Discover & Collect <span className="gradient-text">Albums & Soundtracks</span>
           </h1>
           <p className="text-slate-400 text-sm sm:text-base mt-2">
-            Search any singer, composer, or artist to discover all their movie soundtracks, album titles, and original cover art.
+            Search intelligently by album name, movie soundtrack, singer/artist, or band. Save your favorites to build your personalized Insights collection.
           </p>
         </div>
 
@@ -122,7 +122,7 @@ export const SearchPage = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Type artist name (e.g. S.P. Balasubrahmanyam, A.R. Rahman, Coldplay, Taylor Swift)..."
+            placeholder="Search by album, movie soundtrack, artist, or band name (e.g. Coldplay, S.P. Balasubrahmanyam, Thriller, Abbey Road)..."
             className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-500 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-xl transition-all"
           />
         </div>
@@ -132,7 +132,7 @@ export const SearchPage = () => {
       {loading ? (
         <div className="py-20 text-center flex flex-col items-center justify-center gap-4">
           <Loader2 className="w-10 h-10 animate-spin text-indigo-500" />
-          <p className="text-slate-400 text-sm font-medium">Fetching movie & album discography for "{searchTerm}"...</p>
+          <p className="text-slate-400 text-sm font-medium">Fetching catalog items for "{searchTerm}"...</p>
         </div>
       ) : error ? (
         <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-center flex flex-col items-center gap-3">
@@ -141,8 +141,8 @@ export const SearchPage = () => {
       ) : albums.length === 0 ? (
         <div className="py-20 text-center glass-panel rounded-3xl border border-slate-800 p-8">
           <Disc className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-white">No Movies or Albums Found for "{searchTerm}"</h3>
-          <p className="text-sm text-slate-400 mt-1">Try searching for another artist name.</p>
+          <h3 className="text-lg font-bold text-white">No Catalog Items Found for "{searchTerm}"</h3>
+          <p className="text-sm text-slate-400 mt-1">Try searching for a different album, artist, or soundtrack name.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -178,7 +178,7 @@ export const SearchPage = () => {
                 {/* Info Container */}
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div>
-                    {/* Actual Movie / Album Name */}
+                    {/* Album / Movie Title */}
                     <h3 className="font-extrabold text-white text-base leading-snug line-clamp-2 group-hover:text-indigo-300 transition-colors flex items-start gap-1.5">
                       <Film className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
                       <span>{album.title}</span>

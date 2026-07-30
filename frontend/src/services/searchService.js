@@ -1,9 +1,9 @@
 import api from './api';
 
 export const searchService = {
-  searchAlbums: async (query, type = 'artist') => {
+  searchAlbums: async (query) => {
     const response = await api.get('/search', {
-      params: { query, type }
+      params: { query }
     });
     return response.data;
   }

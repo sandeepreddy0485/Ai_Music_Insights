@@ -21,10 +21,8 @@ public class SearchController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<AlbumSearchResultDto>> searchAlbums(
-            @RequestParam(name = "query") String query,
-            @RequestParam(name = "type", defaultValue = "artist", required = false) String type) {
-        List<AlbumSearchResultDto> results = iTunesSearchService.searchAlbums(query, type);
+    public ResponseEntity<List<AlbumSearchResultDto>> searchAlbums(@RequestParam(name = "query") String query) {
+        List<AlbumSearchResultDto> results = iTunesSearchService.searchAlbums(query);
         return ResponseEntity.ok(results);
     }
 }

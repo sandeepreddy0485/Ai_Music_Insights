@@ -34,24 +34,20 @@ public class ITunesSearchService {
         this.restTemplate = restTemplate;
     }
 
-    public List<AlbumSearchResultDto> searchAlbums(String query, String type) {
+    public List<AlbumSearchResultDto> searchAlbums(String query) {
         if (query == null || query.trim().isEmpty()) {
             throw new BadRequestException("Search query term cannot be empty");
         }
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(itunesApiUrl)
+        // Search intelligently across Album names, Artist/Singer names, Band names, and Movie Soundtracks
+        URI targetUri = UriComponentsBuilder.fromHttpUrl(itunesApiUrl)
                 .queryParam("term", query.trim())
                 .queryParam("entity", "album")
-                .queryParam("limit", 25);
+                .queryParam("limit", 25)
+                .build()
+                .toUri();
 
-        // Search specifically by artist if type is 'artist'
-        if ("artist".equalsIgnoreCase(type)) {
-            builder.queryParam("attribute", "artistTerm");
-        }
-
-        URI targetUri = builder.build().toUri();
-
-        logger.info("Calling upstream iTunes Search API by {}: {}", type, targetUri);
+        logger.info("Calling upstream iTunes Search API for query term: {}", targetUri);
 
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -73,9 +69,9 @@ public class ITunesSearchService {
                 return Collections.emptyList();
             }
 
-            logger.info("Successfully fetched {} album results for artist/query '{}'", response.getResults().size(), query);
+            logger.info("Successfully fetched {} album results for query '{}'", response.getResults().size(), query);
 
-            // Filter out non-album or incomplete results
+            // Filter out incomplete results
             return response.getResults().stream()
                     .filter(album -> album.getAppleCatalogId() != null && album.getTitle() != null)
                     .collect(Collectors.toList());
