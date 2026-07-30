@@ -3,9 +3,9 @@ import { searchService } from '../services/searchService';
 import { libraryService } from '../services/libraryService';
 import { useDebounce } from '../hooks/useDebounce';
 import { SaveAlbumModal } from '../components/SaveAlbumModal';
-import { Search, Music, Disc, Calendar, CheckCircle2, BookmarkPlus, Loader2, Sparkles, UserCheck, Tag } from 'lucide-react';
+import { Search, Music, Disc, Calendar, CheckCircle2, BookmarkPlus, Loader2, Sparkles, UserCheck } from 'lucide-react';
 
-const DEFAULT_PLACEHOLDER = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
+const DEFAULT_PLACEHOLDER = 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80';
 
 export const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState('Coldplay');
@@ -124,7 +124,7 @@ export const SearchPage = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search albums, artists, soundtracks, or genres (e.g. Ghajini, Coldplay, Taylor Swift, Thriller)..."
+            placeholder="Search albums, artists, soundtracks, or genres (e.g. Coldplay, Ghajini, Taylor Swift, Thriller)..."
             className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-500 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-xl transition-all"
           />
         </div>
@@ -134,7 +134,7 @@ export const SearchPage = () => {
       {loading ? (
         <div className="py-20 text-center flex flex-col items-center justify-center gap-4">
           <Loader2 className="w-10 h-10 animate-spin text-indigo-500" />
-          <p className="text-slate-400 text-sm font-medium">Fetching album catalog details for "{searchTerm}"...</p>
+          <p className="text-slate-400 text-sm font-medium">Fetching catalog details for "{searchTerm}"...</p>
         </div>
       ) : error ? (
         <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-center flex flex-col items-center gap-3">
@@ -143,7 +143,7 @@ export const SearchPage = () => {
       ) : albums.length === 0 ? (
         <div className="py-20 text-center glass-panel rounded-3xl border border-slate-800 p-8">
           <Disc className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-white">No Albums Found for "{searchTerm}"</h3>
+          <h3 className="text-lg font-bold text-white">No Catalog Items Found for "{searchTerm}"</h3>
           <p className="text-sm text-slate-400 mt-1">Try searching for a different album or artist name.</p>
         </div>
       ) : (
@@ -151,16 +151,17 @@ export const SearchPage = () => {
           {albums.map((album) => {
             const isSaved = savedCatalogIds.has(album.appleCatalogId);
 
-            // 1. Album Cover: Use artworkUrl100 if present; fallback ONLY if null/empty
+            // Artwork URL from Apple CDN
             const artworkSrc = album.artworkUrl ? album.artworkUrl : DEFAULT_PLACEHOLDER;
+            const albumTitle = album.title || album.artistName + ' - Album';
 
             return (
               <div key={album.appleCatalogId} className="glass-card rounded-2xl overflow-hidden flex flex-col group border border-slate-800">
-                {/* 1. Album Cover (artworkUrl100) */}
+                {/* Artwork */}
                 <div className="relative aspect-square overflow-hidden bg-slate-900">
                   <img
                     src={artworkSrc}
-                    alt={album.title}
+                    alt={albumTitle}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                     onError={(e) => {
@@ -168,7 +169,7 @@ export const SearchPage = () => {
                       e.target.src = DEFAULT_PLACEHOLDER;
                     }}
                   />
-                  {/* 4. Genre Badge on Artwork */}
+                  {/* Genre Badge */}
                   <div className="absolute top-3 right-3">
                     <span className="px-2.5 py-1 rounded-full bg-slate-900/85 backdrop-blur-md border border-slate-700/80 text-xs font-bold text-purple-300 shadow-md">
                       {album.genre || 'Music'}
@@ -179,26 +180,26 @@ export const SearchPage = () => {
                 {/* Card Details */}
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-2.5">
-                    {/* 2. Album Title (collectionName) */}
-                    <h3 className="font-extrabold text-white text-base leading-snug line-clamp-2 group-hover:text-indigo-300 transition-colors">
-                      {album.title}
-                    </h3>
+                    {/* Album Title */}
+                    <div className="min-h-[2.75rem] flex items-center">
+                      <h3 className="font-extrabold text-white text-base leading-snug line-clamp-2 group-hover:text-indigo-300 transition-colors">
+                        {albumTitle}
+                      </h3>
+                    </div>
                     
-                    {/* 3. Artist Name (artistName) */}
+                    {/* Artist Name */}
                     <p className="text-xs font-semibold text-slate-300 line-clamp-1 flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1.5 rounded-lg border border-slate-800">
                       <UserCheck className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                      <span className="text-purple-300">{album.artistName}</span>
+                      <span className="text-purple-300">{album.artistName || 'Various Artists'}</span>
                     </p>
 
-                    {/* Metadata Row: 5. Release Date & 6. Track Count */}
+                    {/* Metadata Row: Release Date & Track Count */}
                     <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/80">
-                      {/* 5. Release Date (releaseDate) */}
                       <span className="flex items-center gap-1 text-slate-300 font-medium">
                         <Calendar className="w-3.5 h-3.5 text-indigo-400" />
                         {album.releaseDate ? album.releaseDate.substring(0, 10) : 'N/A'}
                       </span>
                       
-                      {/* 6. Track Count (trackCount) */}
                       <span className="flex items-center gap-1 text-purple-300 font-medium">
                         <Music className="w-3.5 h-3.5 text-purple-400" />
                         {album.trackCount ? `${album.trackCount} tracks` : 'N/A'}
@@ -206,7 +207,7 @@ export const SearchPage = () => {
                     </div>
                   </div>
 
-                  {/* 7. Save Button */}
+                  {/* Save Button */}
                   <button
                     onClick={() => !isSaved && handleOpenSaveModal(album)}
                     disabled={isSaved}

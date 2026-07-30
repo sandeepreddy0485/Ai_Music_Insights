@@ -12,6 +12,12 @@ public class AlbumSearchResultDto {
     @JsonProperty("collectionName")
     private String title;
 
+    @JsonProperty("collectionCensoredName")
+    private String collectionCensoredName;
+
+    @JsonProperty("trackName")
+    private String trackName;
+
     @JsonProperty("artistName")
     private String artistName;
 
@@ -26,6 +32,9 @@ public class AlbumSearchResultDto {
 
     @JsonProperty("artworkUrl100")
     private String artworkUrl;
+
+    @JsonProperty("artworkUrl60")
+    private String artworkUrl60;
 
     public AlbumSearchResultDto() {}
 
@@ -43,13 +52,34 @@ public class AlbumSearchResultDto {
     public Long getAppleCatalogId() { return appleCatalogId; }
     public void setAppleCatalogId(Long appleCatalogId) { this.appleCatalogId = appleCatalogId; }
 
-    public String getTitle() { return title; }
+    public String getTitle() {
+        if (title != null && !title.isBlank()) {
+            return title;
+        }
+        if (collectionCensoredName != null && !collectionCensoredName.isBlank()) {
+            return collectionCensoredName;
+        }
+        if (trackName != null && !trackName.isBlank()) {
+            return trackName;
+        }
+        if (artistName != null && !artistName.isBlank()) {
+            return artistName + " - Greatest Hits";
+        }
+        return "Untitled Album";
+    }
+
     public void setTitle(String title) { this.title = title; }
 
-    public String getArtistName() { return artistName; }
+    public String getArtistName() { 
+        return (artistName != null && !artistName.isBlank()) ? artistName : "Various Artists"; 
+    }
+    
     public void setArtistName(String artistName) { this.artistName = artistName; }
 
-    public String getGenre() { return genre; }
+    public String getGenre() { 
+        return (genre != null && !genre.isBlank()) ? genre : "Music"; 
+    }
+
     public void setGenre(String genre) { this.genre = genre; }
 
     public String getReleaseDate() { return releaseDate; }
@@ -59,10 +89,15 @@ public class AlbumSearchResultDto {
     public void setTrackCount(Integer trackCount) { this.trackCount = trackCount; }
 
     public String getArtworkUrl() {
-        if (artworkUrl == null || artworkUrl.isBlank()) {
-            return null;
+        String url = artworkUrl;
+        if (url == null || url.isBlank()) {
+            url = artworkUrl60;
         }
-        return artworkUrl.replace("http://", "https://");
+        if (url == null || url.isBlank()) {
+            return "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80";
+        }
+        String secureUrl = url.replace("http://", "https://");
+        return secureUrl.replace("100x100bb", "600x600bb");
     }
     
     public void setArtworkUrl(String artworkUrl) { this.artworkUrl = artworkUrl; }

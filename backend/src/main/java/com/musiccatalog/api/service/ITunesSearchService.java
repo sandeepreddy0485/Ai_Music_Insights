@@ -71,11 +71,9 @@ public class ITunesSearchService {
 
             logger.info("Successfully fetched {} album results for query '{}'", response.getResults().size(), query);
 
-            // Filter to ensure valid album title (collectionName) and catalog ID exist
+            // Filter to ensure valid catalog ID exists
             return response.getResults().stream()
-                    .filter(album -> album.getAppleCatalogId() != null 
-                                  && album.getTitle() != null 
-                                  && !album.getTitle().isBlank())
+                    .filter(album -> album.getAppleCatalogId() != null)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Error communicating with iTunes API for URI '{}': {}", targetUri, e.getMessage(), e);
