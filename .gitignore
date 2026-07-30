@@ -1,0 +1,20 @@
+# Maven Target
+backend/target/
+*.class
+
+# Node Modules & Build Outputs
+frontend/node_modules/
+frontend/dist/
+frontend/.vite-temp/
+
+# IDE & OS Files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+*.log
+
+# Environment Files
+.env
+.env.local
