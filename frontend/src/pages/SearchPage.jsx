@@ -124,7 +124,7 @@ export const SearchPage = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search albums, artists, soundtracks, or genres (e.g. Coldplay, Ghajini, Taylor Swift, Thriller)..."
+            placeholder="Search albums, artists, soundtracks, or genres (e.g. S.S. Thaman, Coldplay, Simmba, Thriller)..."
             className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-500 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-xl transition-all"
           />
         </div>
@@ -153,15 +153,14 @@ export const SearchPage = () => {
 
             // Artwork URL from Apple CDN
             const artworkSrc = album.artworkUrl ? album.artworkUrl : DEFAULT_PLACEHOLDER;
-            const albumTitle = album.title || album.artistName + ' - Album';
 
             return (
               <div key={album.appleCatalogId} className="glass-card rounded-2xl overflow-hidden flex flex-col group border border-slate-800">
-                {/* Artwork */}
+                {/* Artwork (artworkUrl100) */}
                 <div className="relative aspect-square overflow-hidden bg-slate-900">
                   <img
                     src={artworkSrc}
-                    alt={albumTitle}
+                    alt={album.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                     onError={(e) => {
@@ -180,14 +179,14 @@ export const SearchPage = () => {
                 {/* Card Details */}
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-2.5">
-                    {/* Album Title */}
+                    {/* Album Title (collectionName) */}
                     <div className="min-h-[2.75rem] flex items-center">
                       <h3 className="font-extrabold text-white text-base leading-snug line-clamp-2 group-hover:text-indigo-300 transition-colors">
-                        {albumTitle}
+                        {album.title}
                       </h3>
                     </div>
                     
-                    {/* Artist Name */}
+                    {/* Artist Name (artistName) */}
                     <p className="text-xs font-semibold text-slate-300 line-clamp-1 flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1.5 rounded-lg border border-slate-800">
                       <UserCheck className="w-3.5 h-3.5 text-purple-400 shrink-0" />
                       <span className="text-purple-300">{album.artistName || 'Various Artists'}</span>
