@@ -60,7 +60,7 @@ public class AlbumSearchResultDto {
 
     public String getArtworkUrl() {
         if (artworkUrl == null || artworkUrl.isBlank()) {
-            return "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80";
+            return null;
         }
         return artworkUrl.replace("http://", "https://");
     }

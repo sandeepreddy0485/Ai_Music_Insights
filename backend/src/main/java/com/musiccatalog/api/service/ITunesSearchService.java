@@ -39,7 +39,7 @@ public class ITunesSearchService {
             throw new BadRequestException("Search query term cannot be empty");
         }
 
-        // Search intelligently across Album names, Artist/Singer names, Band names, and Movie Soundtracks
+        // Search iTunes API enforcing entity=album
         URI targetUri = UriComponentsBuilder.fromHttpUrl(itunesApiUrl)
                 .queryParam("term", query.trim())
                 .queryParam("entity", "album")
@@ -47,7 +47,7 @@ public class ITunesSearchService {
                 .build()
                 .toUri();
 
-        logger.info("Calling upstream iTunes Search API for query term: {}", targetUri);
+        logger.info("Calling upstream iTunes Search API: {}", targetUri);
 
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -71,9 +71,11 @@ public class ITunesSearchService {
 
             logger.info("Successfully fetched {} album results for query '{}'", response.getResults().size(), query);
 
-            // Filter out incomplete results
+            // Filter to ensure valid album title (collectionName) and catalog ID exist
             return response.getResults().stream()
-                    .filter(album -> album.getAppleCatalogId() != null && album.getTitle() != null)
+                    .filter(album -> album.getAppleCatalogId() != null 
+                                  && album.getTitle() != null 
+                                  && !album.getTitle().isBlank())
                     .collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Error communicating with iTunes API for URI '{}': {}", targetUri, e.getMessage(), e);
