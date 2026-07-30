@@ -48,9 +48,13 @@ export const EditLibraryModal = ({ item, isOpen, onClose, onUpdate, loading }) =
         {/* Album Cover Summary */}
         <div className="p-6 bg-slate-900/60 border-b border-slate-800/80 flex items-center gap-4">
           <img
-            src={item.artworkUrl || 'https://via.placeholder.com/100'}
+            src={item.artworkUrl ? item.artworkUrl.replace('http://', 'https://').replace('100x100bb', '600x600bb') : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80'}
             alt={item.title}
             className="w-16 h-16 rounded-xl object-cover shadow-md border border-slate-700"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
+            }}
           />
           <div className="min-w-0 flex-1">
             <h4 className="font-semibold text-white truncate">{item.title}</h4>

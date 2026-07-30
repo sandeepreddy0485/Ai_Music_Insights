@@ -58,6 +58,13 @@ public class AlbumSearchResultDto {
     public Integer getTrackCount() { return trackCount; }
     public void setTrackCount(Integer trackCount) { this.trackCount = trackCount; }
 
-    public String getArtworkUrl() { return artworkUrl; }
+    public String getArtworkUrl() {
+        if (artworkUrl == null || artworkUrl.isBlank()) {
+            return "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80";
+        }
+        String secureUrl = artworkUrl.replace("http://", "https://");
+        return secureUrl.replace("100x100bb", "600x600bb");
+    }
+    
     public void setArtworkUrl(String artworkUrl) { this.artworkUrl = artworkUrl; }
 }

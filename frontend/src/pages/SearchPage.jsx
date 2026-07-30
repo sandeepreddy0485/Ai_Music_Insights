@@ -154,10 +154,14 @@ export const SearchPage = () => {
                 {/* Artwork Container */}
                 <div className="relative aspect-square overflow-hidden bg-slate-900">
                   <img
-                    src={album.artworkUrl || 'https://via.placeholder.com/300'}
+                    src={album.artworkUrl ? album.artworkUrl.replace('http://', 'https://').replace('100x100bb', '600x600bb') : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80'}
                     alt={album.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
+                    }}
                   />
                   <div className="absolute top-3 right-3">
                     <span className="px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700/80 text-xs font-semibold text-purple-300">
