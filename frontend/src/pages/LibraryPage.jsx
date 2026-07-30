@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { libraryService } from '../services/libraryService';
 import { RatingStars } from '../components/RatingStars';
 import { EditLibraryModal } from '../components/EditLibraryModal';
-import { Library, Search, Trash2, Edit3, Filter, ArrowUpDown, Calendar, Music, Sparkles, Loader2, MessageSquare, Film, UserCheck } from 'lucide-react';
+import { Library, Search, Trash2, Edit3, Filter, ArrowUpDown, Calendar, Music, Sparkles, Loader2, MessageSquare, Tag, UserCheck } from 'lucide-react';
 
 export const LibraryPage = () => {
   const [library, setLibrary] = useState([]);
@@ -188,7 +188,7 @@ export const LibraryPage = () => {
 
             return (
               <div key={item.id} className="glass-card rounded-2xl overflow-hidden flex flex-col group relative border border-slate-800">
-                {/* Artwork Container */}
+                {/* 1. Display Artwork */}
                 <div className="relative aspect-square overflow-hidden bg-slate-900">
                   <img
                     src={artworkSrc}
@@ -199,8 +199,9 @@ export const LibraryPage = () => {
                       e.target.src = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
                     }}
                   />
+                  {/* 4. Display Genre Badge */}
                   <div className="absolute top-3 right-3 flex items-center gap-2">
-                    <span className="px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700/80 text-xs font-semibold text-purple-300">
+                    <span className="px-2.5 py-1 rounded-full bg-slate-900/85 backdrop-blur-md border border-slate-700/80 text-xs font-bold text-purple-300 shadow-md">
                       {item.genre || 'Music'}
                     </span>
                   </div>
@@ -208,30 +209,28 @@ export const LibraryPage = () => {
 
                 {/* Info Container */}
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                  <div>
-                    {/* Real Movie / Album Name */}
-                    <h3 className="font-extrabold text-white text-base leading-snug line-clamp-2 group-hover:text-purple-400 transition-colors flex items-start gap-1.5">
-                      <Film className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                      <span>{item.title}</span>
+                  <div className="space-y-2">
+                    {/* 2. Display Title */}
+                    <h3 className="font-extrabold text-white text-base leading-snug line-clamp-2 group-hover:text-purple-400 transition-colors">
+                      {item.title}
                     </h3>
                     
-                    {/* Artist Name directly under Movie/Album Name */}
-                    <p className="text-xs font-semibold text-slate-300 line-clamp-1 mt-2.5 flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1.5 rounded-lg border border-slate-800">
+                    {/* 3. Display Artist */}
+                    <p className="text-xs font-semibold text-purple-300 line-clamp-1 flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1.5 rounded-lg border border-slate-800">
                       <UserCheck className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                      <span className="text-purple-300">{item.artistName}</span>
+                      <span>{item.artistName}</span>
                     </p>
 
-                    <div className="flex items-center gap-3 text-xs text-slate-400 mt-3">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                        {item.releaseDate ? item.releaseDate.substring(0, 4) : 'N/A'}
+                    {/* 4. Display Genre & 5. Display Release Date */}
+                    <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/80">
+                      <span className="flex items-center gap-1 text-slate-300 font-medium">
+                        <Calendar className="w-3.5 h-3.5 text-purple-400" />
+                        {item.releaseDate ? item.releaseDate.substring(0, 10) : 'N/A'}
                       </span>
-                      {item.trackCount && (
-                        <span className="flex items-center gap-1">
-                          <Music className="w-3.5 h-3.5 text-slate-500" />
-                          {item.trackCount} tracks
-                        </span>
-                      )}
+                      <span className="flex items-center gap-1 text-purple-300 font-medium">
+                        <Tag className="w-3.5 h-3.5 text-purple-400" />
+                        {item.genre || 'Music'}
+                      </span>
                     </div>
 
                     {/* Rating Display */}
