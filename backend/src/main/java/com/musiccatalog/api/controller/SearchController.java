@@ -23,8 +23,8 @@ public class SearchController {
     @GetMapping("/search")
     public ResponseEntity<List<AlbumSearchResultDto>> searchAlbums(
             @RequestParam(name = "query") String query,
-            @RequestParam(name = "type", defaultValue = "album", required = false) String type) {
-        List<AlbumSearchResultDto> results = iTunesSearchService.searchAlbums(query);
+            @RequestParam(name = "type", defaultValue = "artist", required = false) String type) {
+        List<AlbumSearchResultDto> results = iTunesSearchService.searchAlbums(query, type);
         return ResponseEntity.ok(results);
     }
 }

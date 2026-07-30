@@ -34,19 +34,24 @@ public class ITunesSearchService {
         this.restTemplate = restTemplate;
     }
 
-    public List<AlbumSearchResultDto> searchAlbums(String query) {
+    public List<AlbumSearchResultDto> searchAlbums(String query, String type) {
         if (query == null || query.trim().isEmpty()) {
             throw new BadRequestException("Search query term cannot be empty");
         }
 
-        URI targetUri = UriComponentsBuilder.fromHttpUrl(itunesApiUrl)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(itunesApiUrl)
                 .queryParam("term", query.trim())
                 .queryParam("entity", "album")
-                .queryParam("limit", 25)
-                .build()
-                .toUri();
+                .queryParam("limit", 25);
 
-        logger.info("Calling upstream iTunes Search API URI: {}", targetUri);
+        // Search specifically by artist if type is 'artist'
+        if ("artist".equalsIgnoreCase(type)) {
+            builder.queryParam("attribute", "artistTerm");
+        }
+
+        URI targetUri = builder.build().toUri();
+
+        logger.info("Calling upstream iTunes Search API by {}: {}", type, targetUri);
 
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -68,7 +73,7 @@ public class ITunesSearchService {
                 return Collections.emptyList();
             }
 
-            logger.info("Successfully fetched {} album results from iTunes API for query '{}'", response.getResults().size(), query);
+            logger.info("Successfully fetched {} album results for artist/query '{}'", response.getResults().size(), query);
 
             // Filter out non-album or incomplete results
             return response.getResults().stream()

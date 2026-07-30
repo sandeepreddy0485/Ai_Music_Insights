@@ -3,7 +3,7 @@ import { searchService } from '../services/searchService';
 import { libraryService } from '../services/libraryService';
 import { useDebounce } from '../hooks/useDebounce';
 import { SaveAlbumModal } from '../components/SaveAlbumModal';
-import { Search, Music, Disc, Calendar, CheckCircle2, BookmarkPlus, Loader2, Sparkles } from 'lucide-react';
+import { Search, Music, Disc, Calendar, CheckCircle2, BookmarkPlus, Loader2, Sparkles, UserCheck } from 'lucide-react';
 
 export const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState('Coldplay');
@@ -35,7 +35,7 @@ export const SearchPage = () => {
     }
   };
 
-  // Perform iTunes Search
+  // Perform iTunes Artist Search
   useEffect(() => {
     if (!debouncedSearchTerm.trim()) {
       setAlbums([]);
@@ -46,7 +46,7 @@ export const SearchPage = () => {
       setLoading(true);
       setError('');
       try {
-        const results = await searchService.searchAlbums(debouncedSearchTerm);
+        const results = await searchService.searchAlbums(debouncedSearchTerm, 'artist');
         setAlbums(results || []);
       } catch (err) {
         if (err.response?.status === 401) {
@@ -102,14 +102,14 @@ export const SearchPage = () => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="relative z-10 max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-4">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>iTunes Global Music Catalog</span>
+            <UserCheck className="w-3.5 h-3.5" />
+            <span>Search Albums by Artist</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Discover & Collect <span className="gradient-text">Albums</span>
+            Search Albums by <span className="gradient-text">Artist</span>
           </h1>
           <p className="text-slate-400 text-sm sm:text-base mt-2">
-            Search millions of albums across all genres from Apple Music. Save your favorites to build your personalized Insights collection.
+            Type any musical artist to discover all their official albums, release dates, track counts, and high-res cover art from Apple Music.
           </p>
         </div>
 
@@ -122,7 +122,7 @@ export const SearchPage = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search artists, albums, or genres (e.g. Coldplay, Taylor Swift, Rock)..."
+            placeholder="Search by artist name (e.g. Coldplay, Taylor Swift, Ed Sheeran, Drake, A.R. Rahman)..."
             className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-900/90 border border-slate-700/80 text-white placeholder-slate-500 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-xl transition-all"
           />
         </div>
@@ -132,7 +132,7 @@ export const SearchPage = () => {
       {loading ? (
         <div className="py-20 text-center flex flex-col items-center justify-center gap-4">
           <Loader2 className="w-10 h-10 animate-spin text-indigo-500" />
-          <p className="text-slate-400 text-sm font-medium">Fetching live catalog from iTunes...</p>
+          <p className="text-slate-400 text-sm font-medium">Fetching discography for artist "{searchTerm}"...</p>
         </div>
       ) : error ? (
         <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-center flex flex-col items-center gap-3">
@@ -141,8 +141,8 @@ export const SearchPage = () => {
       ) : albums.length === 0 ? (
         <div className="py-20 text-center glass-panel rounded-3xl border border-slate-800 p-8">
           <Disc className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-white">No Albums Found</h3>
-          <p className="text-sm text-slate-400 mt-1">Try searching for a different artist or album name.</p>
+          <h3 className="text-lg font-bold text-white">No Albums Found for "{searchTerm}"</h3>
+          <p className="text-sm text-slate-400 mt-1">Try searching for a different artist name.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
