@@ -209,17 +209,14 @@ export const LibraryPage = () => {
                 {/* Info Container */}
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div>
-                    {/* Movie / Album Title */}
-                    <div className="flex items-center gap-1.5 mb-1">
-                      <Film className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">Movie / Album</span>
-                    </div>
-                    <h3 className="font-extrabold text-white text-base leading-snug line-clamp-2 group-hover:text-purple-400 transition-colors">
-                      {item.title}
+                    {/* Real Movie / Album Name */}
+                    <h3 className="font-extrabold text-white text-base leading-snug line-clamp-2 group-hover:text-purple-400 transition-colors flex items-start gap-1.5">
+                      <Film className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                      <span>{item.title}</span>
                     </h3>
                     
-                    {/* Artist Name under Movie/Album Name */}
-                    <p className="text-xs font-semibold text-slate-300 line-clamp-1 mt-2 flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1.5 rounded-lg border border-slate-800">
+                    {/* Artist Name directly under Movie/Album Name */}
+                    <p className="text-xs font-semibold text-slate-300 line-clamp-1 mt-2.5 flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1.5 rounded-lg border border-slate-800">
                       <UserCheck className="w-3.5 h-3.5 text-purple-400 shrink-0" />
                       <span className="text-purple-300">{item.artistName}</span>
                     </p>
