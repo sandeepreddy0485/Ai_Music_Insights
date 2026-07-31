@@ -2,9 +2,11 @@
 
 ![Music Insights Logo](logo.png)
 
-🚀 **Live Production Application:** [https://ai-music-insights.vercel.app](https://ai-music-insights.vercel.app)
+🚀 **Live Demo:** [https://ai-music-insights.vercel.app](https://ai-music-insights.vercel.app)
 
-A production-quality, interview-ready full-stack web application for cataloging music albums, analyzing collection trends, and generating natural-language AI insights. Built with **Spring Boot 3.x**, **Spring Security**, **JWT Authentication**, **Spring Data JPA**, **PostgreSQL**, **iTunes Search API**, and a modern **React.js + Vite + Tailwind CSS + Recharts** frontend.
+I built this application to deeply explore building a modern, full-stack platform using Spring Boot, React, stateless JWT authentication, and third-party API integration. I chose to structure the architecture around music albums rather than individual songs because albums provide significantly richer, structured metadata—which creates the perfect foundation for generating meaningful visual analytics and natural-language AI summaries of a user's listening profile.
+
+Built with **Java 17 Spring Boot 3.x**, **Spring Security**, **Spring Data JPA**, **PostgreSQL**, the **iTunes Search API**, and a premium **React.js + Vite + Tailwind CSS** frontend utilizing **Recharts** for data visualization.
 
 ---
 
@@ -195,3 +197,17 @@ npm run dev
 4. Build Command: `npm run build`
 5. Output Directory: `dist`
 6. Deploy! Vercel handles SPA client routing automatically.
+
+---
+
+## Challenges & Learnings
+
+During the development of this platform, I encountered and navigated a few interesting technical challenges:
+
+- **iTunes API Data Modeling:** Creating a robust DTO tier that safely deserialized the deeply nested and sometimes inconsistent JSON payloads from the Apple iTunes Search API, while simultaneously serializing clean, standardized keys for the React frontend over the wire using `@JsonAlias`.
+- **Stateless JWT Security:** Implementing a completely stateless authentication flow with Spring Security 6.x. It challenged me to understand how custom filters, the SecurityContextHolder, and React's Axios interceptors interact securely across CORS-enabled domains to elegantly handle session expirations.
+- **Image Fallback Engineering:** Initially, the iTunes API provided very low-resolution 100x100 `artworkUrl` assets. I implemented a dynamic URI parsing algorithm in the frontend to intercept the CDN string and request an upscaled `600x600bb` image, complete with chained `onError` React fallback handlers to protect the UI layout if the high-resolution asset doesn't exist.
+- **Mathematical Business Logic:** I designed the `AnalyticsService` to compute behavioral metrics completely on the server edge. Calculating the "Diversity Score" (using mathematical Shannon Entropy) and dynamically bucketing raw release dates into grouped decades forced me to master advanced Java Streams API mapping and reduction logic.
+- **Full-Stack Cloud Deployment Implementation:** Transitioning from a localhost H2 local environment to a live PostgreSQL production database hosted on Render, resolving JDBC URL connection formatting securely, and orchestrating the final API connection to Vercel's global CDN via Vite's `import.meta.env` system.
+
+Building this project end-to-end crystallized my understanding of how heavily the backend architecture directly dictates the frontend React scalability, and how authentication acts as the seamless bridge between them.
