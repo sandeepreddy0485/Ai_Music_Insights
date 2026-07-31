@@ -4,7 +4,14 @@
 
 🚀 **Live Demo:** [https://ai-music-insights.vercel.app](https://ai-music-insights.vercel.app)
 
-I built this application to deeply explore building a modern, full-stack platform using Spring Boot, React, stateless JWT authentication, and third-party API integration. I chose to structure the architecture around music albums rather than individual songs because albums provide significantly richer, structured metadata—which creates the perfect foundation for generating meaningful visual analytics and natural-language AI summaries of a user's listening profile.
+## Screenshots
+*(Add screenshots of your Dashboard, Search, and Library pages here later)*
+
+## Project Overview
+I built this application to deeply explore building a modern, full-stack platform using Spring Boot, React, stateless JWT authentication, and third-party API integration. 
+
+## Entity Choice
+I chose to structure the architecture around music albums rather than individual songs because albums provide significantly richer, structured metadata (release years, track counts, genres). This creates the perfect foundation for generating meaningful visual analytics and natural-language AI summaries of a user's listening profile.
 
 Built with **Java 17 Spring Boot 3.x**, **Spring Security**, **Spring Data JPA**, **PostgreSQL**, the **iTunes Search API**, and a premium **React.js + Vite + Tailwind CSS** frontend utilizing **Recharts** for data visualization.
 
@@ -126,7 +133,13 @@ frontend/
 
 ---
 
-## REST API Specification
+## AI Feature
+
+The platform includes a custom AI Narrative Engine constructed natively in the backend (`AiSummaryService`). Instead of relying on a third-party LLM, the backend mathematically calculates the user's "Diversity Score" (via Shannon Entropy algorithms) and their dominant era listening habits. It dynamically generates tailored behavioral labels (e.g., "Eclectic Sonic Explorer" vs "Focused Genre Loyalist") and streams a detailed narrative analysis back to the React dashboard.
+
+---
+
+## API Documentation
 
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
@@ -211,3 +224,11 @@ During the development of this platform, I encountered and navigated a few inter
 - **Full-Stack Cloud Deployment Implementation:** Transitioning from a localhost H2 local environment to a live PostgreSQL production database hosted on Render, resolving JDBC URL connection formatting securely, and orchestrating the final API connection to Vercel's global CDN via Vite's `import.meta.env` system.
 
 Building this project end-to-end crystallized my understanding of how heavily the backend architecture directly dictates the frontend React scalability, and how authentication acts as the seamless bridge between them.
+
+---
+
+## Future Improvements
+
+- **Social Sharing:** Allow users to generate a public link to share their taste analytics dashboard.
+- **Spotify/Apple Music OAuth:** Implement OAuth2 integration to automatically import and sync external music libraries.
+- **Audio Previews:** Integrate 30-second audio track previews directly within the React UI using `<audio>` tags powered by the iTunes API.
