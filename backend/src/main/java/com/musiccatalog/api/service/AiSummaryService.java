@@ -72,6 +72,24 @@ public class AiSummaryService {
             sb.append(topArtist).append(" is featured in your saved collection. ");
         }
 
+        // Behavioral & Mastery Analytics
+        if (analytics.getDiversityScore() >= 0.70) {
+            sb.append("Your high genre entropy (").append(analytics.getDiversityScore()).append(
+                    ") marks you as an Eclectic Sonic Explorer, covering a truly wide array of musical landscapes. ");
+        } else if (analytics.getDiversityScore() >= 0.40) {
+            sb.append("Your taste is balanced, weaving between a few core styles with occasional exploration. ");
+        } else if (analytics.getTotalAlbums() > 3) {
+            sb.append(
+                    "You are a Focused Genre Loyalist, dedicating your listening heavily to your favorite signature sounds. ");
+        }
+
+        if (analytics.getReviewRate() >= 80) {
+            sb.append("Impressively, you have cataloged and rated ").append((int) analytics.getReviewRate())
+                    .append("% of your vast collection. ");
+        } else if (analytics.getReviewRate() > 0) {
+            sb.append("You've reviewed ").append((int) analytics.getReviewRate()).append("% of your library so far. ");
+        }
+
         if (analytics.getAverageRating() > 0) {
             sb.append("Your overall average rating across your collection is ").append(analytics.getAverageRating())
                     .append(" / 5.0 stars.");

@@ -77,9 +77,18 @@ export const DashboardPage = () => {
     ? Object.entries(analytics.artistDistribution).map(([name, count]) => ({ name, count }))
     : [];
 
-  const yearData = analytics?.releaseYearDistribution
-    ? Object.entries(analytics.releaseYearDistribution).map(([year, count]) => ({ year, count }))
-    : [];
+  const decadeMap = {};
+  if (analytics?.releaseYearDistribution) {
+    Object.entries(analytics.releaseYearDistribution).forEach(([year, count]) => {
+      if (year.match(/^\d{4}$/)) {
+        const decade = year.substring(0, 3) + '0s';
+        decadeMap[decade] = (decadeMap[decade] || 0) + count;
+      }
+    });
+  }
+  const decadeData = Object.entries(decadeMap)
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([year, count]) => ({ year, count }));
 
   const ratingData = analytics?.ratingDistribution
     ? Object.entries(analytics.ratingDistribution).map(([rating, count]) => ({ rating, count }))
@@ -161,8 +170,8 @@ export const DashboardPage = () => {
         ) : (
           <>
             {/* Key Metrics Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="glass-card p-6 rounded-xl border-none flex items-center gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div className="glass-card p-5 rounded-xl border-none flex items-center gap-4">
                 <div className="p-3.5 rounded-2xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
                   <Disc className="w-6 h-6" />
                 </div>
@@ -172,7 +181,7 @@ export const DashboardPage = () => {
                 </div>
               </div>
 
-              <div className="glass-card p-6 rounded-xl border-none flex items-center gap-4">
+              <div className="glass-card p-5 rounded-xl border-none flex items-center gap-4">
                 <div className="p-3.5 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
                   <Star className="w-6 h-6" />
                 </div>
@@ -182,13 +191,33 @@ export const DashboardPage = () => {
                 </div>
               </div>
 
-              <div className="glass-card p-6 rounded-xl border-none flex items-center gap-4">
+              <div className="glass-card p-5 rounded-xl border-none flex items-center gap-4">
                 <div className="p-3.5 rounded-2xl bg-purple-600/20 text-purple-400 border border-purple-500/30">
                   <Music className="w-6 h-6" />
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Total Tracks</p>
                   <p className="text-2xl font-extrabold text-white mt-0.5">{analytics.totalTracks}</p>
+                </div>
+              </div>
+
+              <div className="glass-card p-5 rounded-xl border-none flex items-center gap-4">
+                <div className="p-3.5 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  <Star className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Library Reviewed</p>
+                  <p className="text-xl font-extrabold text-white mt-0.5">{analytics.reviewRate}%</p>
+                </div>
+              </div>
+
+              <div className="glass-card p-5 rounded-xl border-none flex items-center gap-4">
+                <div className="p-3.5 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Diversity Score</p>
+                  <p className="text-xl font-extrabold text-white mt-0.5">{analytics.diversityScore}</p>
                 </div>
               </div>
             </div>
@@ -243,21 +272,21 @@ export const DashboardPage = () => {
                 </div>
               </div>
 
-              {/* Chart 3: Releases by Year (Line Chart) */}
+              {/* Chart 3: Releases by Decade (Bar Chart) */}
               <div className="glass-card p-6 rounded-xl border-none space-y-4">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-amber-400" />
-                  <h3 className="font-bold text-white text-lg">Releases by Year</h3>
+                  <h3 className="font-bold text-white text-lg">Decade Profile</h3>
                 </div>
                 <div className="h-72 w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={yearData} margin={{ top: 20, right: 20, left: -20, bottom: 5 }}>
+                    <BarChart data={decadeData} margin={{ top: 20, right: 20, left: -20, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                       <XAxis dataKey="year" stroke="#94a3b8" tick={{ fontSize: 11 }} />
                       <YAxis stroke="#94a3b8" allowDecimals={false} />
                       <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', color: '#fff' }} />
-                      <Line type="monotone" dataKey="count" stroke="#f59e0b" strokeWidth={3} dot={{ fill: '#f59e0b', r: 5 }} />
-                    </LineChart>
+                      <Bar dataKey="count" fill="#f59e0b" radius={[6, 6, 0, 0]} />
+                    </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
