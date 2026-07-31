@@ -46,7 +46,7 @@ export const LoginPage = () => {
       <div className="w-full max-w-md glass-card rounded-2xl p-8 relative z-10 border border-slate-800 shadow-2xl">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white shadow-xl shadow-indigo-500/30 mb-4">
+          <div className="inline-flex p-3 rounded-2xl bg-gradient-to-tr from-purple-500 to-pink-500 text-white shadow-xl shadow-purple-500/30 mb-4">
             <Music className="w-8 h-8" />
           </div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight">
@@ -81,7 +81,8 @@ export const LoginPage = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                autoComplete="email"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
           </div>
@@ -100,7 +101,8 @@ export const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                autoComplete="current-password"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
           </div>
@@ -108,7 +110,7 @@ export const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 px-4 rounded-xl font-semibold text-white gradient-btn flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 cursor-pointer disabled:opacity-50"
+            className="w-full py-3.5 px-4 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 flex items-center justify-center gap-2 shadow-lg shadow-purple-600/30 cursor-pointer disabled:opacity-50 transition-all hover:scale-[1.02] duration-300"
           >
             {loading ? (
               <>
@@ -125,11 +127,18 @@ export const LoginPage = () => {
         </form>
 
         {/* Footer */}
-        <div className="mt-8 pt-6 border-t border-slate-800 text-center text-sm text-slate-400">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-indigo-400 font-semibold hover:text-indigo-300 transition-colors">
-            Create Account
-          </Link>
+        <div className="mt-8 pt-6 border-t border-slate-800 text-center text-sm text-slate-400 flex flex-col gap-3">
+          <div>
+            Don't have an account?{' '}
+            <Link to="/register" className="text-pink-400 font-semibold hover:text-pink-300 transition-colors">
+              Create Account
+            </Link>
+          </div>
+          <div>
+            <Link to="/forgot-password" className="text-slate-400 hover:text-white transition-colors">
+              Forgot your password?
+            </Link>
+          </div>
         </div>
       </div>
     </div>

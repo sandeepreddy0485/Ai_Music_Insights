@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { libraryService } from '../services/libraryService';
 import { RatingStars } from '../components/RatingStars';
 import { EditLibraryModal } from '../components/EditLibraryModal';
-import { Library, Search, Trash2, Edit3, Filter, ArrowUpDown, Calendar, Music, Sparkles, Loader2, MessageSquare, Tag, UserCheck } from 'lucide-react';
+import { Search, Loader2, Edit3, Trash2 } from 'lucide-react';
 
 export const LibraryPage = () => {
   const [library, setLibrary] = useState([]);
@@ -36,7 +36,8 @@ export const LibraryPage = () => {
     }
   };
 
-  const handleOpenEdit = (item) => {
+  const handleOpenEdit = (e, item) => {
+    e.stopPropagation();
     setEditingItem(item);
     setIsEditModalOpen(true);
   };
@@ -54,7 +55,8 @@ export const LibraryPage = () => {
     }
   };
 
-  const handleDeleteItem = async (id, title) => {
+  const handleDeleteItem = async (e, id, title) => {
+    e.stopPropagation();
     if (!window.confirm(`Are you sure you want to remove "${title}" from your library?`)) {
       return;
     }
@@ -85,201 +87,127 @@ export const LibraryPage = () => {
     });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Header Banner */}
-      <div className="glass-panel p-8 rounded-3xl relative overflow-hidden border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="relative z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold uppercase tracking-wider mb-4">
-            <Library className="w-3.5 h-3.5" />
-            <span>Personal Collection</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            My Saved <span className="gradient-text">Library</span>
-          </h1>
-          <p className="text-slate-400 text-sm sm:text-base mt-2">
-            Manage your saved movies & albums, review ratings, personal notes, and catalog collection metrics.
-          </p>
-        </div>
+    <div className="relative min-h-full pb-10">
+      {/* Sticky Top Header Gradient */}
+      <div className="sticky top-0 z-40 bg-gradient-to-b from-[#242424] to-transparent h-48 w-full absolute pointer-events-none -mt-4 opacity-70" />
 
-        <Link
-          to="/search"
-          className="relative z-10 px-6 py-3.5 rounded-2xl font-semibold text-sm text-white gradient-btn flex items-center gap-2 shadow-xl shadow-indigo-600/30 hover:scale-105 transition-transform"
-        >
-          <Search className="w-4 h-4" />
-          <span>Discover More Albums</span>
-        </Link>
-      </div>
+      {/* Header & Controls */}
+      <div className="px-6 pt-8 pb-4 relative z-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <h1 className="text-3xl font-extrabold text-white tracking-tight">Your Library</h1>
 
-      {/* Filter & Controls Bar */}
-      {!loading && library.length > 0 && (
-        <div className="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-              <Filter className="w-4 h-4 text-indigo-400" />
-              Genre:
-            </span>
+        {!loading && library.length > 0 && (
+          <div className="flex items-center gap-4">
             <select
               value={selectedGenre}
               onChange={(e) => setSelectedGenre(e.target.value)}
-              className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="bg-[#242424] hover:bg-[#2a2a2a] border-none rounded-full px-4 py-2 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-white transition-colors cursor-pointer"
             >
               {uniqueGenres.map(genre => (
-                <option key={genre} value={genre}>{genre}</option>
+                <option key={genre} value={genre}>{genre === 'ALL' ? 'All Genres' : genre}</option>
               ))}
             </select>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-              <ArrowUpDown className="w-4 h-4 text-purple-400" />
-              Sort By:
-            </span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="bg-[#242424] hover:bg-[#2a2a2a] border-none rounded-full px-4 py-2 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-white transition-colors cursor-pointer"
             >
               <option value="NEWEST">Recently Added</option>
               <option value="RATING_DESC">Highest Rated</option>
               <option value="TITLE_ASC">Title (A-Z)</option>
             </select>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Content Section */}
-      {loading ? (
-        <div className="py-20 text-center flex flex-col items-center justify-center gap-4">
-          <Loader2 className="w-10 h-10 animate-spin text-purple-500" />
-          <p className="text-slate-400 text-sm font-medium">Loading your collection...</p>
-        </div>
-      ) : error ? (
-        <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-center">
-          {error}
-        </div>
-      ) : library.length === 0 ? (
-        /* Empty State */
-        <div className="py-20 text-center glass-panel rounded-3xl border border-slate-800 p-8 max-w-xl mx-auto space-y-6">
-          <div className="w-16 h-16 rounded-full bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto">
-            <Library className="w-8 h-8" />
+      <div className="px-6 relative z-10">
+        {/* Content Section */}
+        {loading ? (
+          <div className="py-20 text-center flex flex-col items-center justify-center gap-4">
+            <Loader2 className="w-10 h-10 animate-spin text-fuchsia-500" />
           </div>
-          <div>
-            <h3 className="text-xl font-bold text-white">Your Library is Empty</h3>
-            <p className="text-sm text-slate-400 mt-2">
-              You haven't saved any albums yet. Search Apple's catalog to collect your favorite records and unlock AI insights!
+        ) : error ? (
+          <div className="p-6 rounded-lg bg-red-500/10 text-red-500 text-sm font-bold text-center">
+            {error}
+          </div>
+        ) : library.length === 0 ? (
+          <div className="py-32 text-center max-w-md mx-auto">
+            <h3 className="text-2xl font-bold text-white mb-4">Your Library is Empty</h3>
+            <p className="text-base text-[#b3b3b3] mb-8">
+              Save your favorite albums from the catalog and they will appear here.
             </p>
+            <Link
+              to="/search"
+              className="inline-flex items-center justify-center bg-white text-black font-bold text-base px-8 py-3.5 rounded-full hover:scale-105 transition-transform"
+            >
+              Back to Catalog
+            </Link>
           </div>
-          <Link
-            to="/search"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white gradient-btn shadow-lg shadow-indigo-600/30"
-          >
-            <Search className="w-4 h-4" />
-            <span>Search iTunes Catalog</span>
-          </Link>
-        </div>
-      ) : (
-        /* Grid Display */
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredAndSortedLibrary.map((item) => {
-            const artworkSrc = item.artworkUrl
-              ? item.artworkUrl.replace('http://', 'https://')
-              : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-6 mt-4">
+            {filteredAndSortedLibrary.map((item) => {
+              const artworkSrc = item.artworkUrl
+                ? item.artworkUrl.replace('http://', 'https://').replace('100x100bb', '600x600bb')
+                : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
 
-            return (
-              <div key={item.id} className="glass-card rounded-2xl overflow-hidden flex flex-col group relative border border-slate-800">
-                {/* 1. Display Artwork */}
-                <div className="relative aspect-square overflow-hidden bg-slate-900">
-                  <img
-                    src={artworkSrc}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
-                    }}
-                  />
-                  {/* 4. Display Genre Badge */}
-                  <div className="absolute top-3 right-3 flex items-center gap-2">
-                    <span className="px-2.5 py-1 rounded-full bg-slate-900/85 backdrop-blur-md border border-slate-700/80 text-xs font-bold text-purple-300 shadow-md">
-                      {item.genre || 'Music'}
-                    </span>
+              return (
+                <div key={item.id} className="bg-[#181818] p-4 rounded-md flex flex-col group relative hover:bg-[#282828] transition-all cursor-pointer">
+                  {/* Artwork Image Container */}
+                  <div className="relative aspect-square overflow-hidden rounded-md mb-4 shadow-[0_8px_24px_rgba(0,0,0,0.5)] bg-[#333]">
+                    <img
+                      src={artworkSrc}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        if (item.artworkUrl && e.target.src !== item.artworkUrl) {
+                          e.target.src = item.artworkUrl;
+                        } else {
+                          e.target.onerror = null;
+                          e.target.src = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=80';
+                        }
+                      }}
+                    />
+
+                    {/* Hover Controls Overlays */}
+                    <div className="absolute right-2 bottom-2 w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-xl flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-10 hover:scale-105 hover:from-purple-400 hover:to-pink-400" onClick={(e) => handleOpenEdit(e, item)} title="Edit Notes">
+                      <Edit3 className="w-5 h-5 ml-0.5" />
+                    </div>
+
+                    <div className="absolute left-2 bottom-2 w-10 h-10 rounded-full bg-[#121212]/90 text-white shadow-xl flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 hover:bg-[#242424] transition-all duration-300 z-10 group/del" onClick={(e) => handleDeleteItem(e, item.id, item.title)} title="Delete Album">
+                      <Trash2 className="w-4 h-4 text-[#b3b3b3] group-hover/del:text-rose-500" />
+                    </div>
                   </div>
-                </div>
 
-                {/* Info Container */}
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-2">
-                    {/* 2. Display Title */}
-                    <h3 className="font-extrabold text-white text-base leading-snug line-clamp-2 group-hover:text-purple-400 transition-colors">
+                  {/* Text Container */}
+                  <div className="flex flex-col">
+                    <h3 className="font-bold text-white text-base leading-tight truncate mb-1 bg-transparent" title={item.title}>
                       {item.title}
                     </h3>
-                    
-                    {/* 3. Display Artist */}
-                    <p className="text-xs font-semibold text-purple-300 line-clamp-1 flex items-center gap-1.5 bg-slate-900/60 px-2.5 py-1.5 rounded-lg border border-slate-800">
-                      <UserCheck className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                      <span>{item.artistName}</span>
+                    <p className="text-sm font-medium text-[#b3b3b3] truncate" title={item.artistName}>
+                      {item.artistName}
                     </p>
 
-                    {/* 4. Display Genre & 5. Display Release Date */}
-                    <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/80">
-                      <span className="flex items-center gap-1 text-slate-300 font-medium">
-                        <Calendar className="w-3.5 h-3.5 text-purple-400" />
-                        {item.releaseDate ? item.releaseDate.substring(0, 10) : 'N/A'}
-                      </span>
-                      <span className="flex items-center gap-1 text-purple-300 font-medium">
-                        <Tag className="w-3.5 h-3.5 text-purple-400" />
-                        {item.genre || 'Music'}
-                      </span>
+                    {/* Secondary meta info like Rating */}
+                    <div className="flex items-center justify-between mt-3 text-xs text-[#b3b3b3]">
+                      <span>{item.genre || 'Music'}</span>
+                      {item.userRating && (
+                        <span className="flex items-center gap-1 font-bold text-fuchsia-400">★ {item.userRating.toFixed(1)}</span>
+                      )}
                     </div>
-
-                    {/* Rating Display */}
-                    <div className="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between">
-                      <RatingStars rating={item.userRating || 0} readOnly size="sm" />
-                      <span className="text-xs font-bold text-amber-400">
-                        {item.userRating ? `${item.userRating.toFixed(1)} / 5.0` : 'Unrated'}
-                      </span>
-                    </div>
-
-                    {/* Notes Snippet */}
-                    {item.userNotes && (
-                      <div className="mt-3 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 flex items-start gap-2">
-                        <MessageSquare className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
-                        <p className="line-clamp-2 italic">"{item.userNotes}"</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Card Controls */}
-                  <div className="flex items-center gap-2 pt-2 border-t border-slate-800/80">
-                    <button
-                      onClick={() => handleOpenEdit(item)}
-                      className="flex-1 py-2 px-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                    >
-                      <Edit3 className="w-3.5 h-3.5 text-purple-400" />
-                      <span>Edit</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleDeleteItem(item.id, item.title)}
-                      className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-semibold flex items-center justify-center transition-all cursor-pointer"
-                      title="Delete Album"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* Edit Modal */}
       <EditLibraryModal
         item={editingItem}
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onClose={(e) => { e?.stopPropagation(); setIsEditModalOpen(false) }}
         onUpdate={handleUpdateItem}
         loading={actionLoading}
       />

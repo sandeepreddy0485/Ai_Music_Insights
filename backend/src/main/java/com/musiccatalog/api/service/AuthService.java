@@ -3,6 +3,7 @@ package com.musiccatalog.api.service;
 import com.musiccatalog.api.dto.AuthResponse;
 import com.musiccatalog.api.dto.LoginRequest;
 import com.musiccatalog.api.dto.RegisterRequest;
+import com.musiccatalog.api.dto.ResetPasswordRequest;
 import com.musiccatalog.api.dto.UserResponse;
 import com.musiccatalog.api.entity.User;
 import com.musiccatalog.api.exception.BadRequestException;
@@ -25,9 +26,9 @@ public class AuthService {
     private final JwtUtils jwtUtils;
 
     public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager,
-                       JwtUtils jwtUtils) {
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager,
+            JwtUtils jwtUtils) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -37,7 +38,7 @@ public class AuthService {
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new BadRequestException("An account with email '" + request.getEmail() + "' already exists");
+            throw new BadRequestException("Email is already taken");
         }
 
         User user = User.builder()
@@ -57,9 +58,7 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail().trim().toLowerCase(),
-                        request.getPassword()
-                )
-        );
+                        request.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -69,5 +68,14 @@ public class AuthService {
         String token = jwtUtils.generateToken(authentication);
 
         return new AuthResponse(token, UserResponse.fromEntity(user));
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        User user = userRepository.findByEmail(request.getEmail().trim().toLowerCase())
+                .orElseThrow(() -> new BadRequestException("No account found with this email"));
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 }
