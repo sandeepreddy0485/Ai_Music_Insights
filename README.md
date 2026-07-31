@@ -1,5 +1,7 @@
 # Music Catalog Insights Platform
 
+🚀 **Live Production Application:** [https://ai-music-insights.vercel.app](https://ai-music-insights.vercel.app)
+
 A production-quality, interview-ready full-stack web application for cataloging music albums, analyzing collection trends, and generating natural-language AI insights. Built with **Spring Boot 3.x**, **Spring Security**, **JWT Authentication**, **Spring Data JPA**, **PostgreSQL**, **iTunes Search API**, and a modern **React.js + Vite + Tailwind CSS + Recharts** frontend.
 
 ---
